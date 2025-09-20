@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   LiveConnectionState,
   LiveTranscriptionEvent,
@@ -15,47 +15,58 @@ export const useAudioTranscriptionHandler = () => {
   const [caption, setCaption] = useState<string | undefined>("Powered by Deepgram");
   const captionTimeout = useRef<any>();
 
-  useEffect(() => {
+  const fixIosSafariBug = useCallback((e: BlobEvent) => {
     if (!microphone) return;
     if (!connection) return;
+    if (connectionState !== LiveConnectionState.OPEN) return;
 
-    const handleAudioData = (e: BlobEvent) => {
-      // iOS SAFARI FIX:
-      // Prevent packetZero from being sent. If sent at size 0, the connection will close. 
-      if (e.data.size > 0) {
-        connection?.send(e.data);
-      }
+    // iOS SAFARI FIX:
+    // Prevent packetZero from being sent. If sent at size 0, the connection will close. 
+    if (e.data.size > 0) {
+      connection?.send(e.data);
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!microphone) return;
+
+      microphone.addEventListener(MicrophoneEvents.DataAvailable, fixIosSafariBug);
+
+    return () => {
+      microphone.removeEventListener(MicrophoneEvents.DataAvailable, fixIosSafariBug);
     };
+  })
 
-    const handleTranscript = (data: LiveTranscriptionEvent) => {
-      const { is_final: isFinal, speech_final: speechFinal } = data;
-      let thisCaption = data.channel.alternatives[0].transcript;
+  const handleTranscriptTextStream = useCallback((data: LiveTranscriptionEvent) => {
+    const { is_final: isFinal, speech_final: speechFinal } = data;
+    let thisCaption = data.channel.alternatives[0].transcript;
 
-      console.log("thisCaption", thisCaption);
-      if (thisCaption !== "") {
-        console.log('thisCaption !== ""', thisCaption);
-        setCaption(thisCaption);
-      }
+    console.log("thisCaption", thisCaption);
+    if (thisCaption !== "") {
+      console.log('thisCaption !== ""', thisCaption);
+      setCaption(thisCaption);
+    }
 
-      if (isFinal && speechFinal) {
+    if (isFinal && speechFinal) {
+      clearTimeout(captionTimeout.current);
+      captionTimeout.current = setTimeout(() => {
+        setCaption(undefined);
         clearTimeout(captionTimeout.current);
-        captionTimeout.current = setTimeout(() => {
-          setCaption(undefined);
-          clearTimeout(captionTimeout.current);
-        }, 3000);
-      }
-    };
+      }, 3000);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!connection) return;
 
     if (connectionState === LiveConnectionState.OPEN) {
-      connection.addListener(LiveTranscriptionEvents.Transcript, handleTranscript);
-      microphone.addEventListener(MicrophoneEvents.DataAvailable, handleAudioData);
+      connection.addListener(LiveTranscriptionEvents.Transcript, handleTranscriptTextStream);
 
       startMicrophone();
     }
 
     return () => {
-      connection.removeListener(LiveTranscriptionEvents.Transcript, handleTranscript);
-      microphone.removeEventListener(MicrophoneEvents.DataAvailable, handleAudioData);
+      connection.removeListener(LiveTranscriptionEvents.Transcript, handleTranscriptTextStream);
       clearTimeout(captionTimeout.current);
     };
   }, [connectionState]);
