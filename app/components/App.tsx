@@ -2,14 +2,14 @@
 
 import { FC } from "react";
 import { useMicrophoneContext } from "../context/MicrophoneContextProvider";
-import Visualizer from "./Visualizer";
+import { AudioVisualizer } from "./audioVisualizer";
 import { useAudioTranscriptionHandler } from "./hooks/useAudioTranscriptionHandler";
 import { useConnectToDeepgramOnMicrophoneReady } from "./hooks/useConnectToDeepgramOnMicrophoneReady";
 import { useKeepConnectionLive } from "./hooks/useKeepConnectionAlive";
 import { useOnMount } from "./hooks/useOnMount";
 
 export const App: FC = () => {
-  const { setupMicrophone, microphone } =
+  const { setupMicrophone } =
     useMicrophoneContext();
 
   useOnMount(setupMicrophone);
@@ -27,7 +27,7 @@ export const App: FC = () => {
           <div className="flex flex-col flex-auto h-full">
             {/* height 100% minus 8rem */}
             <div className="relative w-full h-full">
-              {microphone && <Visualizer microphone={microphone} />}
+              <AudioVisualizer />
               <div className="absolute bottom-[8rem]  inset-x-0 max-w-4xl mx-auto text-center">
                 {caption && <span className="bg-black/70 p-8">{caption}</span>}
               </div>

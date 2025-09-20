@@ -1,3 +1,4 @@
+import { useMicrophoneContext } from "@/app/context/MicrophoneContextProvider";
 import { useEffect, useRef } from "react";
 
 const interpolateColor = (
@@ -14,13 +15,16 @@ const interpolateColor = (
   return result;
 };
 
-const Visualizer = ({ microphone }: { microphone: MediaRecorder }) => {
+export const AudioVisualizer = () => {
+  const { microphone } = useMicrophoneContext();
+    
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioContext = new (window.AudioContext || window.webkitAudioContext)();
   const analyser = audioContext.createAnalyser();
   const dataArray = new Uint8Array(analyser.frequencyBinCount);
 
   useEffect(() => {
+    if (!microphone) return;
     const source = audioContext.createMediaStreamSource(microphone.stream);
     source.connect(analyser);
 
@@ -68,7 +72,7 @@ const Visualizer = ({ microphone }: { microphone: MediaRecorder }) => {
     }
   };
 
+  if (!microphone) return null;
+
   return <canvas ref={canvasRef} width={window.innerWidth}></canvas>;
 };
-
-export default Visualizer;
