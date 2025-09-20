@@ -4,10 +4,10 @@ import { FC } from "react";
 import { useDeepgramContext } from "../context/DeepgramContextProvider";
 import { useMicrophoneContext } from "../context/MicrophoneContextProvider";
 import Visualizer from "./Visualizer";
-import { useOnMount } from "./hooks/useOnMount";
-import { useConnectToDeepgramOnMicrophoneReady } from "./hooks/useConnectToDeepgramOnMicrophoneReady";
 import { useAudioTranscriptionHandler } from "./hooks/useAudioTranscriptionHandler";
+import { useConnectToDeepgramOnMicrophoneReady } from "./hooks/useConnectToDeepgramOnMicrophoneReady";
 import { useConnectionKeepAlive } from "./hooks/useConnectionKeepAlive";
+import { useOnMount } from "./hooks/useOnMount";
 
 export const App: FC = () => {
   const { connection, connectToDeepgram, connectionState } = useDeepgramContext();

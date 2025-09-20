@@ -1,9 +1,9 @@
+import { ListenLiveClient } from "@deepgram/sdk";
 import { useEffect, useRef } from "react";
 import {
   LiveConnectionState,
 } from "../../context/DeepgramContextProvider";
 import { MicrophoneState } from "../../context/MicrophoneContextProvider";
-import { ListenLiveClient } from "@deepgram/sdk";
 
 interface UseConnectionKeepAliveProps {
   connection: ListenLiveClient | null;

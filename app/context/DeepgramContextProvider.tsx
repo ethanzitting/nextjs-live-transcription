@@ -11,10 +11,10 @@ import {
 
 import {
   createContext,
+  FunctionComponent,
+  ReactNode,
   useContext,
   useState,
-  ReactNode,
-  FunctionComponent,
 } from "react";
 
 interface DeepgramContextType {
@@ -105,5 +105,5 @@ export {
   DeepgramContextProvider,
   LiveConnectionState,
   LiveTranscriptionEvents,
-  type LiveTranscriptionEvent,
+  type LiveTranscriptionEvent
 };
