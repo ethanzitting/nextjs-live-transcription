@@ -3,22 +3,15 @@ import {
   LiveConnectionState,
   LiveTranscriptionEvent,
   LiveTranscriptionEvents,
+  useDeepgramContext,
 } from "../../context/DeepgramContextProvider";
-import { MicrophoneEvents } from "../../context/MicrophoneContextProvider";
+import { MicrophoneEvents, useMicrophoneContext } from "../../context/MicrophoneContextProvider";
 
-interface UseAudioTranscriptionHandlerProps {
-  microphone: MediaRecorder | null;
-  connection: any;
-  connectionState: LiveConnectionState;
-  startMicrophone: () => void;
-}
-
-export const useAudioTranscriptionHandler = ({
-  microphone,
-  connection,
-  connectionState,
-  startMicrophone,
-}: UseAudioTranscriptionHandlerProps) => {
+export const useAudioTranscriptionHandler = () => {
+  const { connection, connectionState } = useDeepgramContext();
+  const { microphone, startMicrophone } =
+    useMicrophoneContext();
+    
   const [caption, setCaption] = useState<string | undefined>("Powered by Deepgram");
   const captionTimeout = useRef<any>();
 

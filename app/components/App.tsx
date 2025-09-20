@@ -1,35 +1,24 @@
 "use client";
 
 import { FC } from "react";
-import { useDeepgramContext } from "../context/DeepgramContextProvider";
 import { useMicrophoneContext } from "../context/MicrophoneContextProvider";
 import Visualizer from "./Visualizer";
 import { useAudioTranscriptionHandler } from "./hooks/useAudioTranscriptionHandler";
 import { useConnectToDeepgramOnMicrophoneReady } from "./hooks/useConnectToDeepgramOnMicrophoneReady";
-import { useConnectionKeepAlive } from "./hooks/useConnectionKeepAlive";
+import { useKeepConnectionLive } from "./hooks/useKeepConnectionAlive";
 import { useOnMount } from "./hooks/useOnMount";
 
 export const App: FC = () => {
-  const { connection, connectToDeepgram, connectionState } = useDeepgramContext();
-  const { setupMicrophone, microphone, startMicrophone, microphoneState } =
+  const { setupMicrophone, microphone } =
     useMicrophoneContext();
 
   useOnMount(setupMicrophone);
   
   useConnectToDeepgramOnMicrophoneReady();
+  useKeepConnectionLive();
 
-  const { caption } = useAudioTranscriptionHandler({
-    microphone,
-    connection,
-    connectionState,
-    startMicrophone,
-  });
+  const { caption } = useAudioTranscriptionHandler();
 
-  useConnectionKeepAlive({
-    connection,
-    microphoneState,
-    connectionState,
-  });
 
   return (
     <>

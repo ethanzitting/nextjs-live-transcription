@@ -1,21 +1,15 @@
-import { ListenLiveClient } from "@deepgram/sdk";
 import { useEffect, useRef } from "react";
 import {
   LiveConnectionState,
+  useDeepgramContext,
 } from "../../context/DeepgramContextProvider";
-import { MicrophoneState } from "../../context/MicrophoneContextProvider";
+import { MicrophoneState, useMicrophoneContext } from "../../context/MicrophoneContextProvider";
 
-interface UseConnectionKeepAliveProps {
-  connection: ListenLiveClient | null;
-  microphoneState: MicrophoneState | null;
-  connectionState: LiveConnectionState;
-}
-
-export const useConnectionKeepAlive = ({
-  connection,
-  microphoneState,
-  connectionState,
-}: UseConnectionKeepAliveProps) => {
+export const useKeepConnectionLive = () => {
+  const { connection, connectionState } = useDeepgramContext();
+  const { microphoneState } =
+    useMicrophoneContext();
+    
   const keepAliveInterval = useRef<any>();
 
   useEffect(() => {
@@ -37,6 +31,5 @@ export const useConnectionKeepAlive = ({
     return () => {
       clearInterval(keepAliveInterval.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [microphoneState, connectionState]);
 };

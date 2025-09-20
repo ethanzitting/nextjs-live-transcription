@@ -7,17 +7,16 @@ export const useConnectToDeepgramOnMicrophoneReady = () => {
 
   const { microphoneState } = useMicrophoneContext();
     
-    useEffect(() => {
-        if (microphoneState === MicrophoneState.Ready) {
-          connectToDeepgram({
-            model: "nova-3",
-            interim_results: true,
-            smart_format: true,
-            filler_words: true,
-            utterance_end_ms: 3000,
-          });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [microphoneState]);
-    
+  useEffect(() => {
+    if (microphoneState === MicrophoneState.Ready) {
+      connectToDeepgram({
+        model: "nova-3",
+        interim_results: true,
+        smart_format: true,
+        filler_words: true,
+        utterance_end_ms: 3000,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [microphoneState]);
 }
