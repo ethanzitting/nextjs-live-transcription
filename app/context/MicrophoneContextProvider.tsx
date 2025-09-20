@@ -6,15 +6,8 @@ import {
   useContext,
   useState,
   ReactNode,
+  PropsWithChildren,
 } from "react";
-
-interface MicrophoneContextType {
-  microphone: MediaRecorder | null;
-  startMicrophone: () => void;
-  stopMicrophone: () => void;
-  setupMicrophone: () => void;
-  microphoneState: MicrophoneState | null;
-}
 
 export enum MicrophoneEvents {
   DataAvailable = "dataavailable",
@@ -36,16 +29,41 @@ export enum MicrophoneState {
   Paused = 6,
 }
 
-const MicrophoneContext = createContext<MicrophoneContextType | undefined>(
+interface MicrophoneContext {
+  microphone: MediaRecorder | null;
+  startMicrophone: () => void;
+  stopMicrophone: () => void;
+  setupMicrophone: () => void;
+  microphoneState: MicrophoneState | null;
+}
+
+
+const defaultMicrophoneContext: MicrophoneContext = {
+  microphone: null,
+  startMicrophone: () => {},
+  stopMicrophone: () => {},
+  setupMicrophone: () => {},
+  microphoneState: null,
+};
+
+const MicrophoneContext = createContext<MicrophoneContext | undefined>(
   undefined
 );
 
-interface MicrophoneContextProviderProps {
-  children: ReactNode;
+export function useMicrophoneContext(): MicrophoneContext {
+  const context = useContext(MicrophoneContext);
+
+  if (context === undefined) {
+    throw new Error(
+      "useMicrophone must be used within a MicrophoneContextProvider"
+    );
+  }
+
+  return context;
 }
 
-const MicrophoneContextProvider: React.FC<MicrophoneContextProviderProps> = ({
-  children,
+const MicrophoneContextProvider: React.FC<PropsWithChildren> = ({
+  children = undefined,
 }) => {
   const [microphoneState, setMicrophoneState] = useState<MicrophoneState>(
     MicrophoneState.NotSetup
@@ -110,16 +128,4 @@ const MicrophoneContextProvider: React.FC<MicrophoneContextProviderProps> = ({
   );
 };
 
-function useMicrophone(): MicrophoneContextType {
-  const context = useContext(MicrophoneContext);
-
-  if (context === undefined) {
-    throw new Error(
-      "useMicrophone must be used within a MicrophoneContextProvider"
-    );
-  }
-
-  return context;
-}
-
-export { MicrophoneContextProvider, useMicrophone };
+export { MicrophoneContextProvider };

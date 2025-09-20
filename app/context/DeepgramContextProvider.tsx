@@ -28,6 +28,16 @@ const DeepgramContext = createContext<DeepgramContextType | undefined>(
   undefined
 );
 
+export function useDeepgramContext(): DeepgramContextType {
+  const context = useContext(DeepgramContext);
+  if (context === undefined) {
+    throw new Error(
+      "useDeepgram must be used within a DeepgramContextProvider"
+    );
+  }
+  return context;
+}
+
 interface DeepgramContextProviderProps {
   children: ReactNode;
 }
@@ -91,19 +101,8 @@ const DeepgramContextProvider: FunctionComponent<
   );
 };
 
-function useDeepgram(): DeepgramContextType {
-  const context = useContext(DeepgramContext);
-  if (context === undefined) {
-    throw new Error(
-      "useDeepgram must be used within a DeepgramContextProvider"
-    );
-  }
-  return context;
-}
-
 export {
   DeepgramContextProvider,
-  useDeepgram,
   LiveConnectionState,
   LiveTranscriptionEvents,
   type LiveTranscriptionEvent,

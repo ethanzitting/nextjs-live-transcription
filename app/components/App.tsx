@@ -5,12 +5,12 @@ import {
   LiveConnectionState,
   LiveTranscriptionEvent,
   LiveTranscriptionEvents,
-  useDeepgram,
+  useDeepgramContext,
 } from "../context/DeepgramContextProvider";
 import {
   MicrophoneEvents,
   MicrophoneState,
-  useMicrophone,
+  useMicrophoneContext,
 } from "../context/MicrophoneContextProvider";
 import Visualizer from "./Visualizer";
 
@@ -18,9 +18,9 @@ const App: () => JSX.Element = () => {
   const [caption, setCaption] = useState<string | undefined>(
     "Powered by Deepgram"
   );
-  const { connection, connectToDeepgram, connectionState } = useDeepgram();
+  const { connection, connectToDeepgram, connectionState } = useDeepgramContext();
   const { setupMicrophone, microphone, startMicrophone, microphoneState } =
-    useMicrophone();
+    useMicrophoneContext();
   const captionTimeout = useRef<any>();
   const keepAliveInterval = useRef<any>();
 
