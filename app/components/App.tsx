@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import {
   LiveConnectionState,
   LiveTranscriptionEvent,
@@ -13,8 +13,9 @@ import {
   useMicrophoneContext,
 } from "../context/MicrophoneContextProvider";
 import Visualizer from "./Visualizer";
+import { useOnMount } from "./hooks/useOnMount";
 
-const App: () => JSX.Element = () => {
+const App: FC = () => {
   const [caption, setCaption] = useState<string | undefined>(
     "Powered by Deepgram"
   );
@@ -24,10 +25,7 @@ const App: () => JSX.Element = () => {
   const captionTimeout = useRef<any>();
   const keepAliveInterval = useRef<any>();
 
-  useEffect(() => {
-    setupMicrophone();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useOnMount(setupMicrophone);
 
   useEffect(() => {
     if (microphoneState === MicrophoneState.Ready) {
