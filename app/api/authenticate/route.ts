@@ -1,5 +1,5 @@
-import { DeepgramError, createClient } from "@deepgram/sdk";
-import { NextResponse, type NextRequest } from "next/server";
+import { createClient, DeepgramError } from "@deepgram/sdk";
+import { type NextRequest, NextResponse } from "next/server";
 
 export const revalidate = 0;
 
@@ -19,14 +19,14 @@ export async function GET(request: NextRequest) {
     await deepgram.auth.grantToken();
 
   if (tokenError) {
-      return NextResponse.json(tokenError);
+    return NextResponse.json(tokenError);
   }
 
   if (!tokenResult) {
     return NextResponse.json(
       new DeepgramError(
-        "Failed to generate temporary token. Make sure your API key is of scope Member or higher."
-      )
+        "Failed to generate temporary token. Make sure your API key is of scope Member or higher.",
+      ),
     );
   }
 
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
   response.headers.set("Surrogate-Control", "no-store");
   response.headers.set(
     "Cache-Control",
-    "s-maxage=0, no-store, no-cache, must-revalidate, proxy-revalidate"
+    "s-maxage=0, no-store, no-cache, must-revalidate, proxy-revalidate",
   );
   response.headers.set("Expires", "0");
 

@@ -3,13 +3,15 @@ import {
   LiveConnectionState,
   useDeepgramContext,
 } from "../../context/DeepgramContextProvider";
-import { MicrophoneState, useMicrophoneContext } from "../../context/MicrophoneContextProvider";
+import {
+  MicrophoneState,
+  useMicrophoneContext,
+} from "../../context/MicrophoneContextProvider";
 
 export const useKeepConnectionLive = () => {
   const { connection, connectionState } = useDeepgramContext();
-  const { microphoneState } =
-    useMicrophoneContext();
-    
+  const { microphoneState } = useMicrophoneContext();
+
   const keepAliveInterval = useRef<any>();
 
   useEffect(() => {
@@ -31,5 +33,5 @@ export const useKeepConnectionLive = () => {
     return () => {
       clearInterval(keepAliveInterval.current);
     };
-  }, [microphoneState, connectionState]);
+  }, [microphoneState, connectionState, connection]);
 };

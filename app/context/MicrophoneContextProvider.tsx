@@ -1,11 +1,11 @@
 "use client";
 
 import {
-  PropsWithChildren,
   createContext,
+  PropsWithChildren,
   useCallback,
   useContext,
-  useState
+  useState,
 } from "react";
 
 export enum MicrophoneEvents {
@@ -36,7 +36,6 @@ interface MicrophoneContext {
   microphoneState: MicrophoneState | null;
 }
 
-
 const defaultMicrophoneContext: MicrophoneContext = {
   microphone: null,
   startMicrophone: () => {},
@@ -45,31 +44,23 @@ const defaultMicrophoneContext: MicrophoneContext = {
   microphoneState: null,
 };
 
-const MicrophoneContext = createContext<MicrophoneContext | undefined>(
-  undefined
+const MicrophoneContext = createContext<MicrophoneContext>(
+  defaultMicrophoneContext,
 );
 
 export function useMicrophoneContext(): MicrophoneContext {
-  const context = useContext(MicrophoneContext);
-
-  if (context === undefined) {
-    throw new Error(
-      "useMicrophone must be used within a MicrophoneContextProvider"
-    );
-  }
-
-  return context;
+  return useContext(MicrophoneContext);
 }
 
 const MicrophoneContextProvider: React.FC<PropsWithChildren> = ({
   children = undefined,
 }) => {
   const [microphoneState, setMicrophoneState] = useState<MicrophoneState>(
-    MicrophoneState.NotSetup
+    MicrophoneState.NotSetup,
   );
   const [microphone, setMicrophone] = useState<MediaRecorder | null>(null);
 
-  const setupMicrophone = async () => {
+  const setupMicrophone = useCallback(async () => {
     setMicrophoneState(MicrophoneState.SettingUp);
 
     try {
@@ -84,12 +75,13 @@ const MicrophoneContextProvider: React.FC<PropsWithChildren> = ({
 
       setMicrophoneState(MicrophoneState.Ready);
       setMicrophone(microphone);
+      console.log("microphone setup complete", microphone);
     } catch (err: any) {
       console.error(err);
 
       throw err;
     }
-  };
+  }, []);
 
   const stopMicrophone = useCallback(() => {
     setMicrophoneState(MicrophoneState.Pausing);

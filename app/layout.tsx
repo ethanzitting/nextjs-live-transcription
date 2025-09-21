@@ -10,9 +10,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-dvh">
-      <body
-        className={'h-full dark'}
-      >
+      <body className={"h-full dark"}>
         <MicrophoneContextProvider>
           <DeepgramContextProvider>{children}</DeepgramContextProvider>
         </MicrophoneContextProvider>

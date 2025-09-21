@@ -9,16 +9,14 @@ import { useKeepConnectionLive } from "./hooks/useKeepConnectionAlive";
 import { useOnMount } from "./hooks/useOnMount";
 
 export const App: FC = () => {
-  const { setupMicrophone } =
-    useMicrophoneContext();
+  const { setupMicrophone } = useMicrophoneContext();
 
   useOnMount(setupMicrophone);
-  
+
   useConnectToDeepgramOnMicrophoneReady();
   useKeepConnectionLive();
 
   const { caption } = useAudioTranscriptionHandler();
-
 
   return (
     <>

@@ -1,15 +1,16 @@
+import { useOnMount } from "@/app/components/hooks/useOnMount";
 import { useMicrophoneContext } from "@/app/context/MicrophoneContextProvider";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const interpolateColor = (
   startColor: number[],
   endColor: number[],
-  factor: number
+  factor: number,
 ): number[] => {
   const result = [];
   for (let i = 0; i < startColor.length; i++) {
     result[i] = Math.round(
-      startColor[i] + factor * (endColor[i] - startColor[i])
+      startColor[i] + factor * (endColor[i] - startColor[i]),
     );
   }
   return result;
@@ -17,22 +18,29 @@ const interpolateColor = (
 
 export const AudioVisualizer = () => {
   const { microphone } = useMicrophoneContext();
-    
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  const analyser = audioContext.createAnalyser();
-  const dataArray = new Uint8Array(analyser.frequencyBinCount);
 
-  useEffect(() => {
-    if (!microphone) return;
-    const source = audioContext.createMediaStreamSource(microphone.stream);
-    source.connect(analyser);
+  const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
+  const [dataArray, setDataArray] = useState<Uint8Array | null>(null);
+  const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
 
-    draw();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  const initializeVisualizer = useCallback(() => {
+    if (typeof window === "undefined") return;
+
+    const audioContext = new (window.AudioContext ||
+      window.webkitAudioContext)();
+    const analyser = audioContext.createAnalyser();
+    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+    setAnalyser(analyser);
+    setDataArray(dataArray);
+    setAudioContext(audioContext);
   }, []);
+  useOnMount(initializeVisualizer);
 
-  const draw = (): void => {
+  const draw = useCallback((): void => {
+    if (!microphone || !audioContext || !analyser || !dataArray) return;
+
     const canvas = canvasRef.current;
 
     if (!canvas) return;
@@ -70,7 +78,16 @@ export const AudioVisualizer = () => {
       context.fillRect(x, height - barHeight, barWidth, barHeight);
       x += barWidth;
     }
-  };
+  }, [analyser, audioContext, dataArray, microphone]);
+
+  useEffect(() => {
+    if (!microphone || !audioContext || !analyser || !dataArray) return;
+
+    const source = audioContext.createMediaStreamSource(microphone.stream);
+    source.connect(analyser);
+
+    draw();
+  }, [microphone, audioContext, analyser, dataArray, draw]);
 
   if (!microphone) return null;
 
