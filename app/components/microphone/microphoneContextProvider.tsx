@@ -2,31 +2,14 @@
 
 import {
   createContext,
+  FC,
   PropsWithChildren,
   useCallback,
   useContext,
+  useMemo,
   useState,
 } from "react";
-
-export enum MicrophoneEvents {
-  DataAvailable = "dataavailable",
-  Error = "error",
-  Pause = "pause",
-  Resume = "resume",
-  Start = "start",
-  Stop = "stop",
-}
-
-export enum MicrophoneState {
-  NotSetup = -1,
-  SettingUp = 0,
-  Ready = 1,
-  Opening = 2,
-  Open = 3,
-  Error = 4,
-  Pausing = 5,
-  Paused = 6,
-}
+import { MicrophoneState } from "@/app/components/microphone/typesAndConstants";
 
 interface MicrophoneContext {
   microphone: MediaRecorder | null;
@@ -44,15 +27,15 @@ const defaultMicrophoneContext: MicrophoneContext = {
   microphoneState: null,
 };
 
-const MicrophoneContext = createContext<MicrophoneContext>(
+const microphoneContext = createContext<MicrophoneContext>(
   defaultMicrophoneContext,
 );
 
 export function useMicrophoneContext(): MicrophoneContext {
-  return useContext(MicrophoneContext);
+  return useContext(microphoneContext);
 }
 
-const MicrophoneContextProvider: React.FC<PropsWithChildren> = ({
+export const MicrophoneContextProvider: FC<PropsWithChildren> = ({
   children = undefined,
 }) => {
   const [microphoneState, setMicrophoneState] = useState<MicrophoneState>(
@@ -77,6 +60,7 @@ const MicrophoneContextProvider: React.FC<PropsWithChildren> = ({
       setMicrophone(microphone);
       console.log("microphone setup complete", microphone);
     } catch (err: any) {
+      setMicrophoneState(MicrophoneState.Error);
       console.error(err);
 
       throw err;
@@ -104,19 +88,25 @@ const MicrophoneContextProvider: React.FC<PropsWithChildren> = ({
     setMicrophoneState(MicrophoneState.Open);
   }, [microphone]);
 
+  const value = useMemo(() => {
+    return {
+      microphone,
+      startMicrophone,
+      stopMicrophone,
+      setupMicrophone,
+      microphoneState,
+    };
+  }, [
+    microphone,
+    startMicrophone,
+    stopMicrophone,
+    setupMicrophone,
+    microphoneState,
+  ]);
+
   return (
-    <MicrophoneContext.Provider
-      value={{
-        microphone,
-        startMicrophone,
-        stopMicrophone,
-        setupMicrophone,
-        microphoneState,
-      }}
-    >
+    <microphoneContext.Provider value={value}>
       {children}
-    </MicrophoneContext.Provider>
+    </microphoneContext.Provider>
   );
 };
-
-export { MicrophoneContextProvider };
