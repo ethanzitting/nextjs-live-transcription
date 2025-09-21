@@ -1,5 +1,5 @@
 import { useOnMount } from "@/app/components/hooks/useOnMount";
-import { useMicrophoneContext } from "@/app/context/MicrophoneContextProvider";
+import { useMicrophoneContext } from "@/app/components/microphone/microphoneContextProvider";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const interpolateColor = (

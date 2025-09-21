@@ -1,14 +1,14 @@
 "use client";
 
 import { FC } from "react";
-import { useMicrophoneContext } from "../context/MicrophoneContextProvider";
-import { AudioVisualizer } from "./audioVisualizer";
-import { useAudioTranscriptionHandler } from "./hooks/useAudioTranscriptionHandler";
-import { useConnectToDeepgramOnMicrophoneReady } from "./hooks/useConnectToDeepgramOnMicrophoneReady";
-import { useKeepConnectionLive } from "./hooks/useKeepConnectionAlive";
-import { useOnMount } from "./hooks/useOnMount";
+import { useMicrophoneContext } from "../microphone/microphoneContextProvider";
+import { AudioVisualizer } from "../audioVisualizer";
+import { useAudioTranscriptionHandler } from "../hooks/useAudioTranscriptionHandler";
+import { useConnectToDeepgramOnMicrophoneReady } from "../hooks/useConnectToDeepgramOnMicrophoneReady";
+import { useKeepConnectionLive } from "../hooks/useKeepConnectionAlive";
+import { useOnMount } from "../hooks/useOnMount";
 
-export const App: FC = () => {
+export const HomePage: FC = () => {
   const { setupMicrophone } = useMicrophoneContext();
 
   useOnMount(setupMicrophone);

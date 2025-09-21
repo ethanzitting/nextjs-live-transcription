@@ -1,8 +1,8 @@
-import { useDeepgramContext } from "@/app/context/DeepgramContextProvider";
+import { useDeepgramContext } from "@/app/components/transcription/deepgramContextProvider";
 import {
   MicrophoneState,
   useMicrophoneContext,
-} from "@/app/context/MicrophoneContextProvider";
+} from "@/app/components/microphone/microphoneContextProvider";
 import { useEffect } from "react";
 import { useUpdatingRef } from "@/app/components/hooks/useUpdatingRef";
 

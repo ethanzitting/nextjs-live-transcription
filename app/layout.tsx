@@ -1,5 +1,5 @@
-import { DeepgramContextProvider } from "./context/DeepgramContextProvider";
-import { MicrophoneContextProvider } from "./context/MicrophoneContextProvider";
+import { DeepgramContextProvider } from "./components/transcription/deepgramContextProvider";
+import { MicrophoneContextProvider } from "./components/microphone/microphoneContextProvider";
 
 import "./globals.css";
 

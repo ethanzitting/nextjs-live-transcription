@@ -4,11 +4,11 @@ import {
   LiveTranscriptionEvent,
   LiveTranscriptionEvents,
   useDeepgramContext,
-} from "../../context/DeepgramContextProvider";
+} from "../transcription/deepgramContextProvider";
 import {
   MicrophoneEvents,
   useMicrophoneContext,
-} from "../../context/MicrophoneContextProvider";
+} from "../microphone/microphoneContextProvider";
 
 export const useAudioTranscriptionHandler = () => {
   const { connection, connectionState } = useDeepgramContext();
