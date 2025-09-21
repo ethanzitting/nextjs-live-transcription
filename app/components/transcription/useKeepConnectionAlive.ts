@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import {
   LiveConnectionState,
   useDeepgramContext,
-} from "../transcription/deepgramContextProvider";
+} from "./deepgramContextProvider";
 import {
   MicrophoneState,
   useMicrophoneContext,

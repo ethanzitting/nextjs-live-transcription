@@ -4,7 +4,7 @@ import {
   LiveTranscriptionEvent,
   LiveTranscriptionEvents,
   useDeepgramContext,
-} from "../transcription/deepgramContextProvider";
+} from "./deepgramContextProvider";
 import {
   MicrophoneEvents,
   useMicrophoneContext,

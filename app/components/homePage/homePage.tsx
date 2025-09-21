@@ -2,10 +2,10 @@
 
 import { FC } from "react";
 import { useMicrophoneContext } from "../microphone/microphoneContextProvider";
-import { AudioVisualizer } from "../audioVisualizer";
-import { useAudioTranscriptionHandler } from "../hooks/useAudioTranscriptionHandler";
-import { useConnectToDeepgramOnMicrophoneReady } from "../hooks/useConnectToDeepgramOnMicrophoneReady";
-import { useKeepConnectionLive } from "../hooks/useKeepConnectionAlive";
+import { AudioVisualizer } from "../audioVisualizer/audioVisualizer";
+import { useAudioTranscriptionHandler } from "../transcription/useAudioTranscriptionHandler";
+import { useConnectToDeepgramOnMicrophoneReady } from "../transcription/useConnectToDeepgramOnMicrophoneReady";
+import { useKeepConnectionLive } from "../transcription/useKeepConnectionAlive";
 import { useOnMount } from "../hooks/useOnMount";
 
 export const HomePage: FC = () => {
