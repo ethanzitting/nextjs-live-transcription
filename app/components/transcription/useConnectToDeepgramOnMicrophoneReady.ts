@@ -1,10 +1,8 @@
 import { useDeepgramContext } from "@/app/components/transcription/deepgramContextProvider";
-import {
-  MicrophoneState,
-  useMicrophoneContext,
-} from "@/app/components/microphone/microphoneContextProvider";
+import { useMicrophoneContext } from "@/app/components/microphone/microphoneContextProvider";
 import { useEffect } from "react";
 import { useUpdatingRef } from "@/app/components/hooks/useUpdatingRef";
+import { MicrophoneState } from "@/app/components/microphone/typesAndConstants";
 
 export const useConnectToDeepgramOnMicrophoneReady = () => {
   const { connectToDeepgram } = useDeepgramContext();

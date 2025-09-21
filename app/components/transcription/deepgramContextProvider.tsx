@@ -1,16 +1,23 @@
 "use client";
 
-import { useLogIfVariableChanges } from "@/app/components/hooks/useLogIfVariableChanges";
 import {
   createClient,
   LiveClient,
   LiveConnectionState,
   type LiveSchema,
-  type LiveTranscriptionEvent,
-  LiveTranscriptionEvents
+  LiveTranscriptionEvents,
 } from "@deepgram/sdk";
 
-import { createContext, FunctionComponent, ReactNode, useCallback, useContext, useState } from "react";
+import {
+  createContext,
+  FunctionComponent,
+  ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
+import { getToken } from "@/app/components/transcription/utils";
 
 interface DeepgramContextType {
   connection: LiveClient | null;
@@ -26,25 +33,19 @@ const defaultDeepgramContext: DeepgramContextType = {
   connectionState: LiveConnectionState.CLOSED,
 };
 
-const DeepgramContext = createContext<DeepgramContextType>(
+const deepgramContext = createContext<DeepgramContextType>(
   defaultDeepgramContext,
 );
 
 export function useDeepgramContext(): DeepgramContextType {
-  return useContext(DeepgramContext);
+  return useContext(deepgramContext);
 }
 
 interface DeepgramContextProviderProps {
   children: ReactNode;
 }
 
-const getToken = async (): Promise<string> => {
-  const response = await fetch("/api/authenticate", { cache: "no-store" });
-  const result = await response.json();
-  return result.access_token;
-};
-
-const DeepgramContextProvider: FunctionComponent<
+export const DeepgramContextProvider: FunctionComponent<
   DeepgramContextProviderProps
 > = ({ children }) => {
   const [connection, setConnection] = useState<LiveClient | null>(null);
@@ -52,7 +53,6 @@ const DeepgramContextProvider: FunctionComponent<
     LiveConnectionState.CLOSED,
   );
 
-  useLogIfVariableChanges(connection, "connection");
   /**
    * Connects to the Deepgram speech recognition service and sets up a live transcription session.
    *
@@ -87,23 +87,18 @@ const DeepgramContextProvider: FunctionComponent<
     }
   }, [connection]);
 
-  return (
-    <DeepgramContext.Provider
-      value={{
-        connection,
-        connectToDeepgram,
-        disconnectFromDeepgram,
-        connectionState,
-      }}
-    >
-      {children}
-    </DeepgramContext.Provider>
-  );
-};
+  const value = useMemo(() => {
+    return {
+      connection,
+      connectToDeepgram,
+      disconnectFromDeepgram,
+      connectionState,
+    };
+  }, [connection, connectToDeepgram, disconnectFromDeepgram, connectionState]);
 
-export {
-  DeepgramContextProvider,
-  LiveConnectionState,
-  LiveTranscriptionEvents,
-  type LiveTranscriptionEvent,
+  return (
+    <deepgramContext.Provider value={value}>
+      {children}
+    </deepgramContext.Provider>
+  );
 };

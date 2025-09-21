@@ -1,12 +1,8 @@
 import { useEffect, useRef } from "react";
-import {
-  LiveConnectionState,
-  useDeepgramContext,
-} from "./deepgramContextProvider";
-import {
-  MicrophoneState,
-  useMicrophoneContext,
-} from "../microphone/microphoneContextProvider";
+import { useDeepgramContext } from "./deepgramContextProvider";
+import { useMicrophoneContext } from "../microphone/microphoneContextProvider";
+import { MicrophoneState } from "@/app/components/microphone/typesAndConstants";
+import { LiveConnectionState } from "@deepgram/sdk";
 
 export const useKeepConnectionLive = () => {
   const { connection, connectionState } = useDeepgramContext();
